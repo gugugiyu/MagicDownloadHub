@@ -2,6 +2,7 @@ package com.magic.searchEngine;
 
 import com.github.kiulian.downloader.model.search.SearchResult;
 import com.github.kiulian.downloader.model.search.SearchResultVideoDetails;
+
 import com.magic.colorSwitcher.ConsoleColors;
 import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;

@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class SearchTabManager {
-    private static List<SearchTab> searchTabList = new ArrayList<>();
+    private static final List<SearchTab> searchTabList = new ArrayList<>();
     private static int currentIdx = 0;
 
     public int size(){
@@ -21,6 +21,10 @@ public class SearchTabManager {
 
     public void addNewTab(SearchTab newSearchTab){
         searchTabList.add(newSearchTab);
+    }
+
+    public void moveToTask(int index){
+        currentIdx = index;
     }
 
     public void removeTab(int index){
@@ -48,8 +52,8 @@ public class SearchTabManager {
             SearchResult continuation = downloader.searchContinuation(nextRequest).data();
             SearchTab tabContinuation = new SearchTab(continuation, queryStr, new Date());
 
-            this.searchTabList.add(tabContinuation);
-            this.currentIdx++;
+            searchTabList.add(tabContinuation);
+            currentIdx++;
 
             return tabContinuation;
         }
@@ -68,7 +72,7 @@ public class SearchTabManager {
         SearchResult result = downloader.search(request).data();
         SearchTab newTab = new SearchTab(result, queryStr, new Date());
 
-        this.searchTabList.add(newTab);
+        searchTabList.add(newTab);
 
         return newTab;
     }

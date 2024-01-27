@@ -1,13 +1,10 @@
 package com.magic.searchEngine;
 
 import com.github.kiulian.downloader.YoutubeDownloader;
-import com.github.kiulian.downloader.downloader.request.RequestSearchContinuation;
-import com.github.kiulian.downloader.downloader.request.RequestSearchResult;
 import com.github.kiulian.downloader.model.search.SearchResult;
-
 import com.github.kiulian.downloader.model.search.field.DurationField;
 import com.github.kiulian.downloader.model.search.field.FeatureField;
-import com.github.kiulian.downloader.model.search.field.TypeField;
+
 import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;
 
