@@ -9,7 +9,7 @@ A generic youtube with integrated search engine and multithreading downloader im
 - Multithreading videos download
 - Video Manager (WIP)
 
-## Installation
+## Step 1: Clone this project
 
 MagicDownloadHub currently required **SDK 21+** to run, you can download it from the official source of Oracle [here](https://www.oracle.com/java/technologies/downloads/)
 
@@ -18,18 +18,26 @@ Next, you can clone this repo (we don't support SSH cloning right now)
 ```sh
 git clone https://github.com/gugugiyu/MagicDownloadHub.git
 ```
+You can also switch to the no test branch
+
+```sh
+git checkout main-(no-test)
+```
+
+## Step 2: Install the dependencies
 
 Then, build the jar file from the artifact
 
 ```sh
-mvn compile
-mvn package
+mvn clean install
 ```
+
+## Step 3: Run the application
 
 and finally run the executable jar
 
 ```shell
-java -jar .\target\artifacts\magic_hub_jar\magic-hub.jar
+mvn exec:java -DmainClass=com.magic.Application
 ```
 
 ## Contribution

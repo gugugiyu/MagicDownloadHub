@@ -8,7 +8,7 @@ import com.magic.searchEngine.SearchEngine;
 
 import java.util.Scanner;
 
-class Application{
+public class Application{
     final static YoutubeDownloader downloader = new YoutubeDownloader();
     final static Scanner scanner = new Scanner(System.in);
     static SearchEngine searchEngine = null;
