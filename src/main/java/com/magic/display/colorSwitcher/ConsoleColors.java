@@ -1,4 +1,4 @@
-package com.magic.colorSwitcher;
+package com.magic.display.colorSwitcher;
 
 public class ConsoleColors {
     // Reset
@@ -79,7 +79,7 @@ public class ConsoleColors {
     }
 
     public static final void printSuccess(String text){
-        System.out.println(GREEN_BRIGHT + text + RESET);
+        System.out.println(GREEN_BOLD + text + RESET);
     }
 
     public static final void printWarning(String text){

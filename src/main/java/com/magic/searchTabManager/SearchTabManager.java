@@ -19,31 +19,32 @@ public class SearchTabManager {
         return searchTabList.size();
     }
 
-    public void addNewTab(SearchTab newSearchTab){
+    public static void addNewTab(SearchTab newSearchTab){
         searchTabList.add(newSearchTab);
     }
 
-    public void moveToTask(int index){
-        currentIdx = index;
+    public static void moveToTask(int index){
+        //We're using 0-based decimal counting system
+        currentIdx = index + 1;
     }
 
-    public void removeTab(int index){
+    public static void removeTab(int index){
         searchTabList.remove(index);
     }
 
-    public void clearHistory(){
+    public static void clearHistory(){
         searchTabList.clear();
     }
 
-    public int getCurrentIdx(){
+    public static int getCurrentIdx(){
         return currentIdx;
     }
 
-    public SearchTab findTab(int id){
+    public static SearchTab findTab(int id){
         return searchTabList.get(id);
     }
 
-    public SearchTab nextPage(YoutubeDownloader downloader, String queryStr){
+    public static SearchTab nextPage(YoutubeDownloader downloader, String queryStr){
         SearchResult latestSearchResult = searchTabList.get(currentIdx).getResultList();
 
         if (latestSearchResult.hasContinuation()) {
@@ -61,7 +62,7 @@ public class SearchTabManager {
         return null;
     }
 
-    public SearchTab search(YoutubeDownloader downloader, String queryStr){
+    public static SearchTab search(YoutubeDownloader downloader, String queryStr){
         RequestSearchResult request = new RequestSearchResult(queryStr)
                 // filters
                 .type(TypeField.VIDEO)                 // Videos only
@@ -73,6 +74,7 @@ public class SearchTabManager {
         SearchTab newTab = new SearchTab(result, queryStr, new Date());
 
         searchTabList.add(newTab);
+        currentIdx++;
 
         return newTab;
     }
