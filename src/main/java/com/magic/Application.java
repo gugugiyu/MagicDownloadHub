@@ -2,75 +2,107 @@ package com.magic;
 
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.model.search.SearchResult;
-import com.magic.colorSwitcher.ConsoleColors;
-import com.magic.searchEngine.DisplayBeautifier;
+import com.magic.display.LogoPrinter;
+import com.magic.display.OptionDisplay;
+import com.magic.display.colorSwitcher.ConsoleColors;
+import com.magic.display.DisplayBeautifier;
+import com.magic.downloader.Downloader;
 import com.magic.searchEngine.SearchEngine;
+import com.magic.searchTabManager.SearchTabManager;
 
+import java.io.Console;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-class Application{
+
+public class Application{
     final static YoutubeDownloader downloader = new YoutubeDownloader();
     final static Scanner scanner = new Scanner(System.in);
     static SearchEngine searchEngine = null;
+    final static Downloader videoDownloader = new Downloader(downloader);
 
-    public static void printOption(){
-        ConsoleColors.printInstruction("# Select operation:");
-        System.out.println("# 0. QUIT");
-        System.out.println("# 1. Search");
-        System.out.println("# 2. Go to next search page");
-        System.out.println("# 3. Browse Searched Tab");
-
-        System.out.print("\n>> ");
-    }
     public static void main(String[] args){
-        ConsoleColors.printInfo( "NOTE: This application is an extension based on github repo of: " +
-                "\n" +
-                "https://github.com/sealedtx/java-youtube-downloader");
+        LogoPrinter.printLogo();
 
         boolean mainFlag = true;
 
         while (mainFlag){
-            printOption();
+            OptionDisplay.printOptionMainMenu();
 
+            try {
+                int mode = scanner.nextInt();
 
-            int mode = scanner.nextInt();
+                switch (mode){
+                    case 0:
+                        //Kill all downloading thread
 
-            switch (mode){
-                case 0:
-                    //Kill all downloading thread
+                        mainFlag = false;
+                        break;
 
-                    mainFlag = false;
-                    break;
+                    //SEARCHING WITH QUERY
+                    case 1:
+                        ConsoleColors.printInstruction("\nEnter query string >> ", true);
 
-                //SEARCHING WITH QUERY
-                case 1:
-                    ConsoleColors.printInstruction("\nEnter query string >> ", true);
+                        //Preconsume the input buffer
+                        scanner.nextLine();
+                        String queryStr = scanner.nextLine();
+                        searchEngine = new SearchEngine(queryStr, null, null, downloader);
 
-                    //Preconsume the input buffer
-                    scanner.nextLine();
-                    String queryStr = scanner.nextLine();
-                    searchEngine = new SearchEngine(queryStr, null, null, downloader);
+                        SearchResult searchResult = searchEngine.search();
 
-                    SearchResult searchResult = searchEngine.search();
+                        DisplayBeautifier.printBeautifiedVideoList(searchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
+                        break;
 
-                    DisplayBeautifier.printBeautifiedVideoList(searchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
-                    break;
+                    case 2:
+                        if (searchEngine == null || SearchTabManager.getTabList().isEmpty()){
+                            //If there's no query yet
+                            ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
+                            continue;
+                        }
 
-                case 2:
-                    if (searchEngine == null){
-                        //If there's no query yet
-                        ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
-                    }else{
                         SearchResult nextPage = searchEngine.nextPage();
-
                         DisplayBeautifier.printBeautifiedVideoList(nextPage, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
-                    }
+                        break;
 
-                    break;
+                    case 3:
+                        DisplayBeautifier.printBeautifiedSearchTab(scanner);
+                        break;
 
-                case 3:
-                    DisplayBeautifier.printBeautifiedSearchTab();
-                    break;
+                    case 4:
+                        if (searchEngine == null || SearchTabManager.getTabList().isEmpty()){
+                            //If there's no query yet
+                            ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
+                            continue;
+                        }
+
+                        int currentTabIndex = SearchTabManager.getCurrentIdx() - 1;
+                        SearchResult currentSearchResult = SearchTabManager.getTabList().get(currentTabIndex).getResultList();
+
+                        DisplayBeautifier.printBeautifiedVideoList(currentSearchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
+                        break;
+
+                    case 6:
+                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"videoData\" directory");
+                        ConsoleColors.printInstruction("\nEnter video ID >> ", true);
+                        scanner.nextLine();
+                        String videoId = scanner.nextLine();
+                        //searchEngine = new SearchEngine(v, null, null, downloader);
+                        if (videoId == null || videoId.equalsIgnoreCase("")){
+                            ConsoleColors.printError("\nError: Invalid videoID\n");
+                            continue;
+                        }
+                        videoDownloader.downloadVideo(videoId);
+                        break;
+
+                    default:
+                        ConsoleColors.printError("\nInvalid operation. Please select again.\n");
+                        break;
+                }
+            } catch (InputMismatchException e){
+                ConsoleColors.printError("\nWrong data type. Make sure to type integers only.\n");
+
+                //Flush the buffer
+                scanner.next();
             }
         }
     }

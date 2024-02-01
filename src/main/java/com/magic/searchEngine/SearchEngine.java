@@ -1,17 +1,12 @@
 package com.magic.searchEngine;
 
 import com.github.kiulian.downloader.YoutubeDownloader;
-import com.github.kiulian.downloader.downloader.request.RequestSearchContinuation;
-import com.github.kiulian.downloader.downloader.request.RequestSearchResult;
 import com.github.kiulian.downloader.model.search.SearchResult;
-
 import com.github.kiulian.downloader.model.search.field.DurationField;
 import com.github.kiulian.downloader.model.search.field.FeatureField;
-import com.github.kiulian.downloader.model.search.field.TypeField;
+
 import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;
-
-import java.util.Date;
 
 public class SearchEngine {
     private String searchText;
@@ -19,13 +14,7 @@ public class SearchEngine {
     private DurationField durationField;
     private YoutubeDownloader downloader;
 
-
-    //Current viewedTab
-    private int currentTab = 0;
-
     //Tabs of previous search result
-    private SearchTabManager searchTabManager = new SearchTabManager();
-
 
     public SearchEngine(String searchText, FeatureField featureWith, DurationField duration, YoutubeDownloader downloader){
         this.searchText = searchText;
@@ -35,30 +24,28 @@ public class SearchEngine {
     }
 
     public SearchResult search() {
-        SearchTab searchTab = searchTabManager.search(downloader, searchText);
-        this.currentTab++;
+        SearchTab searchTab = SearchTabManager.search(downloader, searchText);
 
-        return searchTab != null ? searchTab.getResultList() : null;
+        return searchTab.getResultList();
     }
 
     public SearchResult nextPage(){
         // retrieve next result (20 items max per continuation)
-        SearchTab nextTab = searchTabManager.nextPage(downloader, searchText);
-        this.currentTab++;
+        SearchTab nextTab = SearchTabManager.nextPage(downloader, searchText);
 
         return nextTab != null ? nextTab.getResultList() : null;
     }
 
     public int getCurrentTabSize(){
-        return this.currentTab;
+        return SearchTabManager.getCurrentIdx();
     }
 
     public int getTotalSizeOfATab(int id){
-        return searchTabManager.findTab(id).size();
+        return SearchTabManager.findTab(id).size();
     }
 
     public int getTotalTab(){
-        return searchTabManager.size();
+        return SearchTabManager.getTabList().size();
     }
 
 }
