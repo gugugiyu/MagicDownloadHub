@@ -1,6 +1,6 @@
 # MagicDownloadHub
 
-![image-20240201202121769](C:\Users\nguye\AppData\Roaming\Typora\typora-user-images\image-20240201202121769.png)
+![demo](https://github.com/gugugiyu/MagicDownloadHub/assets/106458387/cb11be59-7a85-4a0d-8149-b065af322089)
 
 A generic youtube with integrated search engine and multithreading downloader implemented based on *sealedtx/java-youtube-downloader*
 
