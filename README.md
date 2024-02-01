@@ -1,6 +1,8 @@
 # MagicDownloadHub
 
-A generic youtube with integrated search engine and multithreading downloader implemented based on sealedtx/java-youtube-downloader
+![image-20240201202121769](C:\Users\nguye\AppData\Roaming\Typora\typora-user-images\image-20240201202121769.png)
+
+A generic youtube with integrated search engine and multithreading downloader implemented based on *sealedtx/java-youtube-downloader*
 
 ## Features
 
@@ -11,7 +13,13 @@ A generic youtube with integrated search engine and multithreading downloader im
 
 ## Step 1: Clone this project
 
-MagicDownloadHub currently required **SDK 21+** to run, you can download it from the official source of Oracle [here](https://www.oracle.com/java/technologies/downloads/)
+MagicDownloadHub currently required **SDK 21+** to run, you can download it from the official source of Oracle [here](https://www.oracle.com/java/technologies/downloads/). Also, the Text User Interface works only for utf-8 supported console only. For Window user, you can set the code page of the command prompt to be UTF-8 using [chcp](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chcp).
+
+```sh
+chcp 65001
+```
+
+Since the main repo java-youtube-downloader is experiencing some issues about the test cases, unit tests is temporarily disable in this repo. However, you may fix and build this with tests at any time.
 
 Next, you can clone this repo (we don't support SSH cloning right now)
 

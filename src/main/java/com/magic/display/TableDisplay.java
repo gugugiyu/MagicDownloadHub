@@ -5,7 +5,7 @@ import com.magic.display.colorSwitcher.ConsoleColors;
 import java.util.List;
 
 public class TableDisplay {
-    private static final int TABLE_WIDTH = 75;
+    public static final int TABLE_WIDTH = 75;
 
     public static <T> void displayTable(List<T> displayList){
         printHalfTopBox();

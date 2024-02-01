@@ -6,9 +6,11 @@ import com.magic.display.LogoPrinter;
 import com.magic.display.OptionDisplay;
 import com.magic.display.colorSwitcher.ConsoleColors;
 import com.magic.display.DisplayBeautifier;
+import com.magic.downloader.Downloader;
 import com.magic.searchEngine.SearchEngine;
 import com.magic.searchTabManager.SearchTabManager;
 
+import java.io.Console;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -17,6 +19,7 @@ public class Application{
     final static YoutubeDownloader downloader = new YoutubeDownloader();
     final static Scanner scanner = new Scanner(System.in);
     static SearchEngine searchEngine = null;
+    final static Downloader videoDownloader = new Downloader(downloader);
 
     public static void main(String[] args){
         LogoPrinter.printLogo();
@@ -76,6 +79,19 @@ public class Application{
                         SearchResult currentSearchResult = SearchTabManager.getTabList().get(currentTabIndex).getResultList();
 
                         DisplayBeautifier.printBeautifiedVideoList(currentSearchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
+                        break;
+
+                    case 6:
+                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"videoData\" directory");
+                        ConsoleColors.printInstruction("\nEnter video ID >> ", true);
+                        scanner.nextLine();
+                        String videoId = scanner.nextLine();
+                        //searchEngine = new SearchEngine(v, null, null, downloader);
+                        if (videoId == null || videoId.equalsIgnoreCase("")){
+                            ConsoleColors.printError("\nError: Invalid videoID\n");
+                            continue;
+                        }
+                        videoDownloader.downloadVideo(videoId);
                         break;
 
                     default:

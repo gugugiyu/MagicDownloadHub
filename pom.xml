@@ -60,6 +60,7 @@
                 </executions>
                 <configuration>
                     <mainClass>com.magic.Application</mainClass>
+                    <commandlineArgs>-Dfile.encoding=UTF-8</commandlineArgs>
                 </configuration>
             </plugin>
         </plugins>
