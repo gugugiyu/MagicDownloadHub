@@ -10,22 +10,23 @@ import com.github.kiulian.downloader.model.videos.formats.AudioFormat;
 import com.github.kiulian.downloader.model.videos.formats.Format;
 import com.github.kiulian.downloader.model.videos.formats.VideoFormat;
 import com.magic.Config;
-import com.magic.display.DisplayBeautifier;
+import com.magic.display.ProgressBar;
 import com.magic.display.colorSwitcher.ConsoleColors;
 
+import java.awt.*;
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
 //This is a helper class for downloading videos
-class DownloadHandler {
+class SingleFileDownloaderHandler {
     private final String downloadDirectory = Config.getDownloadPath();
     private final YoutubeDownloader downloader;
 
-    public DownloadHandler(YoutubeDownloader downloader){
+    SingleFileDownloaderHandler(YoutubeDownloader downloader){
         this.downloader = downloader;
     }
 
-    private VideoInfo getVideoInfo_sync(String videoID){
+    VideoInfo getVideoInfo_sync(String videoID){
         RequestVideoInfo request = new RequestVideoInfo(videoID);
         Response<VideoInfo> response = downloader.getVideoInfo(request);
         VideoInfo video = response.data();
@@ -33,7 +34,7 @@ class DownloadHandler {
         return video;
     }
 
-     void downloadByVideoID_async(String videoID, String newName, boolean replaceIfExisted){
+     void downloadByVideoID_sync(String videoID, String newName, boolean replaceIfExisted){
         //Also this function won't download live video either
 
         //Download path
@@ -42,12 +43,13 @@ class DownloadHandler {
         //Get the format
         VideoInfo videoInfo = getVideoInfo_sync(videoID);
 
-        if (videoInfo.details().isDownloadable()){
-            List<VideoFormat> videoFormats = videoInfo.videoFormats();
-            videoFormats.forEach(it -> {
-                System.out.println(it.videoQuality() + " : " + it.url());
-            });
+        if (videoInfo == null){
+            //Video ID is not exist
+            ConsoleColors.printError("\nVideoID is not exist\n");
+            return;
+        }
 
+        if (videoInfo.details().isDownloadable()){
             Format format = videoInfo.bestVideoWithAudioFormat();
 
             RequestVideoFileDownload request = new RequestVideoFileDownload(format)
@@ -56,7 +58,8 @@ class DownloadHandler {
                     .callback(new YoutubeProgressCallback<File>() {
                         @Override
                         public void onDownloading(int progress) {
-                            DisplayBeautifier.printProgressBar(progress);
+                            ConsoleColors.clearConsole();
+                            ProgressBar.printProgressBar(progress);
                         }
 
                         @Override
@@ -64,6 +67,15 @@ class DownloadHandler {
                             ConsoleColors.printSuccess("\nFinish downloading file " +
                                                         videoInfo
                             );
+
+                            if (Config.isOpenVideoAfterDownload()){
+                                try {
+                                    if (Desktop.isDesktopSupported())
+                                        Desktop.getDesktop().open(new File(videoInfo.toString()));
+                                } catch (IOException e) {
+                                    ConsoleColors.printError("\nCan't open the video, desktop is not supported");
+                                }
+                            }
                         }
 
                         @Override
@@ -91,12 +103,14 @@ class DownloadHandler {
                 System.out.println("FPS: " + videoStat.fps());
                 System.out.println("MIME type: " + videoStat.mimeType());
                 System.out.println("Overall quality: " + videoStat.videoQuality().name());
-                System.out.println("Overall quality: " + videoStat.videoQuality().name());
 
                 //Audio stat
                 System.out.println("Audio MIME TYPE: " + audioStat.mimeType());
                 System.out.println("Audio bitrate: " + ((double) audioStat.audioSampleRate() / 1000) + "kb/s");
                 System.out.println("Overall quality: " + audioStat.audioQuality().name());
+
+                //Misc stat
+                System.out.println("Size: " + ((double) new File(videoInfo.toString()).length() / (1024 * 1024)) + " mb");
 
                 System.out.println();
             }else{

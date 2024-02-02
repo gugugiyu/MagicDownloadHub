@@ -11,6 +11,18 @@ A generic youtube with integrated search engine and multithreading downloader im
 - Multithreading videos download
 - Video Manager (WIP)
 
+## Default Configuration
+
+```
+| settings                       | type    | default value       | description                                                                              |
+|--------------------------------|---------|---------------------|------------------------------------------------------------------------------------------|
+| downloadPath                   | String  | "downloaded_videos" | The root download path                                                                   |
+| openVideoAfterDownload         | Boolean | true                | For single video download only. Auto open up the video (if supported) when downloaded    |
+| timeoutTimeInMillisecond       | Long    | 1000 * 60 * 60 * 12 | Timeout time of a downloading thread if takes too long                                   |
+| verifyVideoIDOnPayloadDownload | Boolean | false               | Verify if that videoId is existed or not. Useful to make sure you enter valid id         |
+| filterDuplicateVideoId         | Boolean | true                | Filter out duplicate videoId in your payload. Disable to download a video multiple times |
+```
+
 ## Step 1: Clone this project
 
 MagicDownloadHub currently required **SDK 21+** to run, you can download it from the official source of Oracle [here](https://www.oracle.com/java/technologies/downloads/). Also, the Text User Interface works only for utf-8 supported console only. For Window user, you can set the code page of the command prompt to be UTF-8 using [chcp](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/chcp).

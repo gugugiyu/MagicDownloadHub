@@ -8,10 +8,8 @@ import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 
 public class DisplayBeautifier {
     public static void printBeautifiedVideoList(SearchResult searchResult, int id, int total){
@@ -114,17 +112,5 @@ public class DisplayBeautifier {
         formattedTime += remainSecond;
 
         return formattedTime;
-    }
-
-    public static void printProgressBar(int progress){
-        ConsoleColors.clearConsole();
-
-        int progressSize = (int) (( (double) progress / 100) * TableDisplay.TABLE_WIDTH); //Display with a "=" per unit
-        int remainingSize = TableDisplay.TABLE_WIDTH - progressSize; //Display with a " " per unit
-
-        String progressStr = StringUtils.repeat("=", progressSize);
-        String remainStr = StringUtils.repeat(" ", remainingSize);
-
-        ConsoleColors.printInstruction("[" + progressStr + remainStr + "]");
     }
 }

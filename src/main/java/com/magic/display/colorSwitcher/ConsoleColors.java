@@ -89,6 +89,9 @@ public class ConsoleColors {
     public static final void printError(String text){
         System.out.println(RED_BRIGHT + text + RESET);
     }
+    public static final void printDebug(String text){
+        System.out.println(RED_BACKGROUND + text + RESET);
+    }
 
     public static final void printInstruction(String text){
         System.out.println(WHITE_BOLD_BRIGHT + text + RESET);

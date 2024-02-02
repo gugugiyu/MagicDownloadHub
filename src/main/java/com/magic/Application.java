@@ -4,6 +4,7 @@ import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.model.search.SearchResult;
 import com.magic.display.LogoPrinter;
 import com.magic.display.OptionDisplay;
+import com.magic.display.TableDisplay;
 import com.magic.display.colorSwitcher.ConsoleColors;
 import com.magic.display.DisplayBeautifier;
 import com.magic.downloader.Downloader;
@@ -11,8 +12,7 @@ import com.magic.searchEngine.SearchEngine;
 import com.magic.searchTabManager.SearchTabManager;
 
 import java.io.Console;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Application{
@@ -81,17 +81,57 @@ public class Application{
                         DisplayBeautifier.printBeautifiedVideoList(currentSearchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
 
-                    case 6:
-                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"videoData\" directory");
+                    case 5:
                         ConsoleColors.printInstruction("\nEnter video ID >> ", true);
                         scanner.nextLine();
                         String videoId = scanner.nextLine();
+
+                        if (videoId == null || videoId.equalsIgnoreCase("")){
+                            ConsoleColors.printError("\nError: Invalid videoID\n");
+                            continue;
+                        }
+
+                        //Create a table with 2 rows, videoFormat on the left and audioFormat on the right
+                        List<String> videoFormatList = videoDownloader.getVideoFormatInString(videoId);
+                        List<String> audioFormatList = videoDownloader.getAudioFormatInString(videoId);
+
+                        TableDisplay.displayMap("Video Formats", "Audio Formats", videoFormatList, audioFormatList);
+
+                        System.out.println();
+                        break;
+
+                    case 6:
+                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
+                        ConsoleColors.printInstruction("\nEnter video ID >> ", true);
+                        scanner.nextLine();
+                        videoId = scanner.nextLine();
                         //searchEngine = new SearchEngine(v, null, null, downloader);
                         if (videoId == null || videoId.equalsIgnoreCase("")){
                             ConsoleColors.printError("\nError: Invalid videoID\n");
                             continue;
                         }
                         videoDownloader.downloadVideo(videoId);
+                        break;
+
+                    case 7:
+                        //Download multiple videoID using space (" ") as a delimiter
+                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
+                        ConsoleColors.printInstruction("\nEnter video IDs (separated by a space)>> ", true);
+                        scanner.nextLine();
+                        videoId = scanner.nextLine();
+
+                        if (videoId == null || videoId.equalsIgnoreCase("")){
+                            ConsoleColors.printError("\nError: Invalid videoIDs\n");
+                            continue;
+                        }
+
+                        //Break them into a list of string
+                        List<String> videoIDs =  Arrays.asList(videoId.split(" "));
+
+                        if (Config.isFilterDuplicateVideoId())
+                            videoIDs = new ArrayList<>(new HashSet<>(videoIDs));
+
+                        videoDownloader.downloadVideos(videoIDs);
                         break;
 
                     default:
