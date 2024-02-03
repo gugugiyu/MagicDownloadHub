@@ -8,8 +8,13 @@ public class Config {
     private static String downloadPath = initDownloadPath();
     private static boolean openVideoAfterDownload = true;
     private static long timeoutTimeInMillisecond = 1000 * 60 * 60 * 12; //12 hours
+    private static long maxNumberOfDownloadThread = 20; //12 hours
     private static boolean verifyVideoIDOnPayloadDownload = false; //takes lot of time to check on a big payload, disable by default
     private static boolean filterDuplicateVideoId = true; //Filter out duplicate videoId. Disable this incase you want to download a video multiple times
+
+    public static long getMaxNumberOfDownloadThread() {
+        return maxNumberOfDownloadThread;
+    }
 
     private static String initDownloadPath(){
         String returnStr = System.getProperty("user.dir");
@@ -51,6 +56,7 @@ public class Config {
         returnList.add("verifyVideoIDOnPayloadDownload");
         returnList.add("timeoutTimeInMillisecond");
         returnList.add("filterDuplicateValue");
+        returnList.add("maxNumberOfDownload");
 
         return returnList;
     }
@@ -65,6 +71,7 @@ public class Config {
         returnList.add(String.valueOf(verifyVideoIDOnPayloadDownload));
         returnList.add(String.valueOf(timeoutTimeInMillisecond) + "ms");
         returnList.add(String.valueOf(filterDuplicateVideoId));
+        returnList.add(String.valueOf(maxNumberOfDownloadThread));
 
         return returnList;
     }

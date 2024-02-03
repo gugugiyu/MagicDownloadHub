@@ -9,27 +9,25 @@ import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;
 
 public class SearchEngine {
-    private String searchText;
     private FeatureField featureField;
     private DurationField durationField;
     private YoutubeDownloader downloader;
 
     //Tabs of previous search result
 
-    public SearchEngine(String searchText, FeatureField featureWith, DurationField duration, YoutubeDownloader downloader){
-        this.searchText = searchText;
+    public SearchEngine(FeatureField featureWith, DurationField duration, YoutubeDownloader downloader){
         this.featureField = featureWith;
         this.durationField = duration;
         this.downloader = downloader;
     }
 
-    public SearchResult search() {
+    public SearchResult search(String searchText) {
         SearchTab searchTab = SearchTabManager.search(downloader, searchText);
 
         return searchTab.getResultList();
     }
 
-    public SearchResult nextPage(){
+    public SearchResult nextPage(String searchText){
         // retrieve next result (20 items max per continuation)
         SearchTab nextTab = SearchTabManager.nextPage(downloader, searchText);
 

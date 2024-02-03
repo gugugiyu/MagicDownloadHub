@@ -45,7 +45,8 @@ public class SearchTabManager {
     }
 
     public static SearchTab nextPage(YoutubeDownloader downloader, String queryStr){
-        SearchResult latestSearchResult = searchTabList.get(currentIdx).getResultList();
+        // Offset 1 as currentIdx use 0-based
+        SearchResult latestSearchResult = searchTabList.get(currentIdx - 1).getResultList();
 
         if (latestSearchResult.hasContinuation()) {
             RequestSearchContinuation nextRequest = new RequestSearchContinuation(latestSearchResult);

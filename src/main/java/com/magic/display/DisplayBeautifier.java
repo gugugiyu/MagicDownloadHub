@@ -19,6 +19,9 @@ public class DisplayBeautifier {
         List<SearchResultVideoDetails> videos = searchResult.videos();
         int listSize = videos.size(); //By default, this value should be 20
 
+        //Clear the screen
+        ConsoleColors.clearConsoleEscapeSequence_test();
+
         System.out.println("\n[Tab " + id + " of " + total + "]");
 
         TableDisplay.printHalfTopBox();
@@ -55,6 +58,9 @@ public class DisplayBeautifier {
         if (searchTabList.isEmpty()){
             ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
         }else{
+            //Clear the screen
+            ConsoleColors.clearConsoleEscapeSequence_test();
+
             ConsoleColors.printSuccess("\nFound " + searchTabList.size() + " tabs");
             System.out.println("You may select a tab to view based on selecting their index");
             System.out.println("Type of any non-digit character to exit selection");

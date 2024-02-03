@@ -58,9 +58,9 @@ public class Application{
                         //Preconsume the input buffer
                         scanner.nextLine();
                         String queryStr = scanner.nextLine();
-                        searchEngine = new SearchEngine(queryStr, null, null, downloader);
+                        searchEngine = new SearchEngine(null, null, downloader);
 
-                        SearchResult searchResult = searchEngine.search();
+                        SearchResult searchResult = searchEngine.search(queryStr);
 
                         DisplayBeautifier.printBeautifiedVideoList(searchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
@@ -72,7 +72,11 @@ public class Application{
                             continue;
                         }
 
-                        SearchResult nextPage = searchEngine.nextPage();
+                        //Get query string of the current page
+                        int currentIdx = SearchTabManager.getCurrentIdx() - 1;
+                        queryStr = SearchTabManager.getTabList().get(currentIdx).getQueryStr();
+
+                        SearchResult nextPage = searchEngine.nextPage(queryStr);
                         DisplayBeautifier.printBeautifiedVideoList(nextPage, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
 
@@ -118,7 +122,7 @@ public class Application{
                         scanner.nextLine();
                         videoId = scanner.nextLine();
                         //searchEngine = new SearchEngine(v, null, null, downloader);
-                        if (videoId == null || videoId.equalsIgnoreCase("") || videoId.contains(" ")){
+                        if (videoId == null || videoId.equalsIgnoreCase("") || videoId.trim().contains(" ")){
                             ConsoleColors.printError("\nError: Invalid videoID. If you want to download multiple videos, it's best to use the payload download method instead.\n");
                             continue;
                         }
@@ -142,6 +146,10 @@ public class Application{
 
                         if (Config.isFilterDuplicateVideoId())
                             videoIDs = new ArrayList<>(new HashSet<>(videoIDs));
+
+                        if (videoIDs.size() > Config.getMaxNumberOfDownloadThread()){
+                            ConsoleColors.printError("\nError: Exceed max number of download. Try again in smaller download payload instead.");
+                        }
 
                         videoDownloader.downloadVideos(videoIDs);
                         break;
