@@ -38,6 +38,7 @@ public class OptionDisplay{
             //Add all operation here
             menuList.add("---MISC");
             menuList.add("QUIT");
+            menuList.add("Show current saved directory");
 
             menuList.add("---SEARCH");
             menuList.add("Search with keyword");

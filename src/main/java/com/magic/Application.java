@@ -11,8 +11,12 @@ import com.magic.downloader.Downloader;
 import com.magic.searchEngine.SearchEngine;
 import com.magic.searchTabManager.SearchTabManager;
 
-import java.io.Console;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.*;
+import java.util.List;
 
 
 public class Application{
@@ -39,8 +43,16 @@ public class Application{
                         mainFlag = false;
                         break;
 
-                    //SEARCHING WITH QUERY
                     case 1:
+                        try {
+                            Runtime.getRuntime().exec("explorer.exe " + Config.getDownloadPath());
+                        }catch (IOException e){
+                            ConsoleColors.printError("Error: can't open saved directory. Either the dir isn't exist or this platform doesn't support this function");
+                        }
+                        break;
+
+                    //SEARCHING WITH QUERY
+                    case 2:
                         ConsoleColors.printInstruction("\nEnter query string >> ", true);
 
                         //Preconsume the input buffer
@@ -53,7 +65,7 @@ public class Application{
                         DisplayBeautifier.printBeautifiedVideoList(searchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
 
-                    case 2:
+                    case 3:
                         if (searchEngine == null || SearchTabManager.getTabList().isEmpty()){
                             //If there's no query yet
                             ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
@@ -64,11 +76,11 @@ public class Application{
                         DisplayBeautifier.printBeautifiedVideoList(nextPage, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
 
-                    case 3:
+                    case 4:
                         DisplayBeautifier.printBeautifiedSearchTab(scanner);
                         break;
 
-                    case 4:
+                    case 5:
                         if (searchEngine == null || SearchTabManager.getTabList().isEmpty()){
                             //If there's no query yet
                             ConsoleColors.printError("\nError: There's no query yet, please use [1] Search instead\n");
@@ -81,7 +93,7 @@ public class Application{
                         DisplayBeautifier.printBeautifiedVideoList(currentSearchResult, searchEngine.getCurrentTabSize(), searchEngine.getTotalTab());
                         break;
 
-                    case 5:
+                    case 6:
                         ConsoleColors.printInstruction("\nEnter video ID >> ", true);
                         scanner.nextLine();
                         String videoId = scanner.nextLine();
@@ -100,7 +112,7 @@ public class Application{
                         System.out.println();
                         break;
 
-                    case 6:
+                    case 7:
                         ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
                         ConsoleColors.printInstruction("\nEnter video ID >> ", true);
                         scanner.nextLine();
@@ -113,7 +125,7 @@ public class Application{
                         videoDownloader.downloadVideo(videoId);
                         break;
 
-                    case 7:
+                    case 8:
                         //Download multiple videoID using space (" ") as a delimiter
                         ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
                         ConsoleColors.printInstruction("\nEnter video IDs (separated by a space)>> ", true);

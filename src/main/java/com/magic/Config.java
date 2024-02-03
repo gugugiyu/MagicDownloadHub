@@ -1,14 +1,26 @@
 package com.magic;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
-    private static String downloadPath = "downloaded_videos";
+    private static String downloadPath = initDownloadPath();
     private static boolean openVideoAfterDownload = true;
     private static long timeoutTimeInMillisecond = 1000 * 60 * 60 * 12; //12 hours
     private static boolean verifyVideoIDOnPayloadDownload = false; //takes lot of time to check on a big payload, disable by default
     private static boolean filterDuplicateVideoId = true; //Filter out duplicate videoId. Disable this incase you want to download a video multiple times
+
+    private static String initDownloadPath(){
+        String returnStr = System.getProperty("user.dir");
+
+        //remove the "target" from the path as we want to use the folder from the src
+        if (returnStr.contains("target")){
+            returnStr = returnStr.substring(0, returnStr.length() - "\\target".length());
+        }
+
+        return returnStr + "\\downloaded_videos"; //Change your folder name here
+    }
 
     public static String getDownloadPath() {
         return downloadPath;

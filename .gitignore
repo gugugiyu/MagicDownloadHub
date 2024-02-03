@@ -11,7 +11,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -23,5 +22,8 @@
 hs_err_pid*
 replay_pid*
 
-target/
 .idea/
+
+target/maven-archiver
+target/maven-status
+target/generated-sources

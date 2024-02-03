@@ -59,13 +59,21 @@ class SingleFileDownloaderHandler {
                         @Override
                         public void onDownloading(int progress) {
                             ConsoleColors.clearConsole();
+
+                            ConsoleColors.printInstruction("Downloading...");
                             ProgressBar.printProgressBar(progress);
+
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                ConsoleColors.printError("Error: Download interrupted");
+                            }
                         }
 
                         @Override
                         public void onFinished(File videoInfo) {
                             ConsoleColors.printSuccess("\nFinish downloading file " +
-                                                        videoInfo
+                                                        videoInfo.getName()
                             );
 
                             if (Config.isOpenVideoAfterDownload()){

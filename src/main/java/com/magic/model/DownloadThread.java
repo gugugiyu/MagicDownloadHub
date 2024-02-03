@@ -40,7 +40,7 @@ public class DownloadThread extends Thread{
                     @Override
                     public void onFinished(File videoInfo) {
                         ProgressBar.addTotalCompletion();
-                        ProgressBar.printProgressBars(TableDisplay.TABLE_WIDTH, id);
+                        ProgressBar.printProgressBars(100, id);
                     }
 
                     @Override

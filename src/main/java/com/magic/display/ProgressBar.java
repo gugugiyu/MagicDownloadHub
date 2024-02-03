@@ -42,6 +42,7 @@ public class ProgressBar {
             for (int i = 0; i < payloadSize; i++)
                 printProgressBar(payloadDownloadProgressList.get(i));
 
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             // exception handling code
         } finally {
