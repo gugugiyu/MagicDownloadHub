@@ -23,7 +23,7 @@ public class ProgressBar {
         String remainStr = StringUtils.repeat(" ", remainingSize);
 
 
-        System.out.printf("%3d%%" + "[" + progressStr + ">" + remainStr + "]\n", progress);
+        System.out.printf("%3d%% " + "[" + progressStr + ">" + remainStr + "]\n", progress);
     }
 
     public static void printProgressBars(int newProgress, int index){
