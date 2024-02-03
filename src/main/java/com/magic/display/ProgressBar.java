@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class ProgressBar {
-    private static Semaphore payloadDownloadLock = new Semaphore(1);
     private static List<Integer> payloadDownloadProgressList = new ArrayList<>(); //This is the shared resources
     private static int totalCompletion = 0; //This is the shared resources
 
@@ -23,31 +22,21 @@ public class ProgressBar {
         String progressStr = StringUtils.repeat("=", progressSize);
         String remainStr = StringUtils.repeat(" ", remainingSize);
 
-        System.out.println("[" + progressStr + ">" + remainStr + "]");
+
+        System.out.printf("%3d%%" + "[" + progressStr + ">" + remainStr + "]\n", progress);
     }
 
     public static void printProgressBars(int newProgress, int index){
-        //Lock the critical section with mutex (with semaphore class)
-        try{
-            payloadDownloadLock.acquire();
-            //Update the new progress for that thread's process
-            ConsoleColors.clearConsole();
-            payloadDownloadProgressList.set(index, newProgress);
+        //Update the new progress for that thread's process
+        payloadDownloadProgressList.set(index, newProgress);
 
-            //Reprint the progress bar
-            int payloadSize = payloadDownloadProgressList.size();
+        //Reprint the progress bar
+        int payloadSize = payloadDownloadProgressList.size();
 
-            ConsoleColors.printInstruction("Downloading... " + "[" + totalCompletion + "/" + payloadSize + "]");
+        ConsoleColors.printInstruction("Downloading... " + "[" + totalCompletion + "/" + payloadSize + "]");
 
-            for (int i = 0; i < payloadSize; i++)
-                printProgressBar(payloadDownloadProgressList.get(i));
-
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            // exception handling code
-        } finally {
-            payloadDownloadLock.release();
-        }
+        for (int i = 0; i < payloadSize; i++)
+            printProgressBar(payloadDownloadProgressList.get(i));
     }
 
     public static synchronized void addTotalCompletion(){
@@ -66,5 +55,9 @@ public class ProgressBar {
     public static void clearPayloadProgressList(){
         payloadDownloadProgressList.clear();
         totalCompletion = 0;
+    }
+
+    public static int getTotalCompletion(){
+        return totalCompletion;
     }
 }

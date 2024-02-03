@@ -118,11 +118,11 @@ public class Application{
                         scanner.nextLine();
                         videoId = scanner.nextLine();
                         //searchEngine = new SearchEngine(v, null, null, downloader);
-                        if (videoId == null || videoId.equalsIgnoreCase("")){
-                            ConsoleColors.printError("\nError: Invalid videoID\n");
+                        if (videoId == null || videoId.equalsIgnoreCase("") || videoId.contains(" ")){
+                            ConsoleColors.printError("\nError: Invalid videoID. If you want to download multiple videos, it's best to use the payload download method instead.\n");
                             continue;
                         }
-                        videoDownloader.downloadVideo(videoId);
+                        videoDownloader.downloadVideo(videoId.trim());
                         break;
 
                     case 8:
@@ -138,7 +138,7 @@ public class Application{
                         }
 
                         //Break them into a list of string
-                        List<String> videoIDs =  Arrays.asList(videoId.split(" "));
+                        List<String> videoIDs =  Arrays.asList(videoId.trim().split(" "));
 
                         if (Config.isFilterDuplicateVideoId())
                             videoIDs = new ArrayList<>(new HashSet<>(videoIDs));

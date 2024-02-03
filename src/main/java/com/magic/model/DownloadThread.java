@@ -17,13 +17,15 @@ public class DownloadThread extends Thread{
     private Format format;
     private YoutubeDownloader downloader = new YoutubeDownloader();
     private final String downloadDirectory = Config.getDownloadPath();
-    private int id;
+    private int currentProgress;
+
+    private Response<File> response = null;
 
     private boolean isError = false;
 
-    public  DownloadThread(Format format, int id){
+    public DownloadThread(Format format){
         this.format = format;
-        this.id = id;
+        this.currentProgress = 0;
     }
 
     @Override
@@ -34,13 +36,13 @@ public class DownloadThread extends Thread{
                 .callback(new YoutubeProgressCallback<File>() {
                     @Override
                     public void onDownloading(int progress) {
-                        ProgressBar.printProgressBars(progress, id);
+                        currentProgress = progress;
                     }
 
                     @Override
                     public void onFinished(File videoInfo) {
+                        currentProgress = 100;
                         ProgressBar.addTotalCompletion();
-                        ProgressBar.printProgressBars(100, id);
                     }
 
                     @Override
@@ -49,11 +51,28 @@ public class DownloadThread extends Thread{
                     }
                 });
 
-        Response<File> response = downloader.downloadVideoFile(request);
+        this.response = downloader.downloadVideoFile(request);
         super.run();
     }
 
     public boolean isError(){
         return isError;
+    }
+
+    public boolean isDone(){
+        return currentProgress >= 100;
+    }
+
+    public int getCurrentProgress() {
+        return currentProgress;
+    }
+
+    public Response<File> getResponse(){
+        if (response == null
+                || response.error() != null
+                || response.cancel())
+            return null;
+
+        return response;
     }
 }

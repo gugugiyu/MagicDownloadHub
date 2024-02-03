@@ -12,6 +12,7 @@ import com.github.kiulian.downloader.model.videos.formats.VideoFormat;
 import com.magic.Config;
 import com.magic.display.ProgressBar;
 import com.magic.display.colorSwitcher.ConsoleColors;
+import com.magic.model.DownloadThread;
 
 import java.awt.*;
 import java.io.File;
@@ -50,50 +51,51 @@ class SingleFileDownloaderHandler {
         }
 
         if (videoInfo.details().isDownloadable()){
-            Format format = videoInfo.bestVideoWithAudioFormat();
+            //Run a download thread
+            DownloadThread singleDownloadThread = new DownloadThread(videoInfo.bestVideoWithAudioFormat());
+            singleDownloadThread.start();
 
-            RequestVideoFileDownload request = new RequestVideoFileDownload(format)
-                    .saveTo(outputDir)
-                    .renameTo(newName)
-                    .callback(new YoutubeProgressCallback<File>() {
-                        @Override
-                        public void onDownloading(int progress) {
-                            ConsoleColors.clearConsole();
+            Response<File> response = null;
 
-                            ConsoleColors.printInstruction("Downloading...");
-                            ProgressBar.printProgressBar(progress);
+            //Block this thread until it joins
+            //Remember, single download is synchronous
+            boolean isDone = false;
 
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                ConsoleColors.printError("Error: Download interrupted");
-                            }
-                        }
+            while (!isDone){
+                //Clear the screen and reprint
+                ConsoleColors.clearConsoleEscapeSequence_test();
+                ConsoleColors.printInstruction("Downloading...");
+                ProgressBar.printProgressBar(singleDownloadThread.getCurrentProgress());
 
-                        @Override
-                        public void onFinished(File videoInfo) {
-                            ConsoleColors.printSuccess("\nFinish downloading file " +
-                                                        videoInfo.getName()
-                            );
+                isDone = singleDownloadThread.isDone();
 
-                            if (Config.isOpenVideoAfterDownload()){
-                                try {
-                                    if (Desktop.isDesktopSupported())
-                                        Desktop.getDesktop().open(new File(videoInfo.toString()));
-                                } catch (IOException e) {
-                                    ConsoleColors.printError("\nCan't open the video, desktop is not supported");
-                                }
-                            }
-                        }
+                //Sleep this thread
+                try{
+                Thread.sleep(Downloader.PROGRESS_BAR_REFRESH_RATE);
+                }catch (InterruptedException e){
+                    ConsoleColors.printError("Error: Downloading thread has been interrupted. Some files might be corrupted");
+                }
+            }
 
-                        @Override
-                        public void onError(Throwable throwable) {
-                            ConsoleColors.printError(throwable.getMessage());
-                        }
-                    })
-                    .overwriteIfExists(replaceIfExisted); //Default is true
-            Response<File> response = downloader.downloadVideoFile(request);
+            response = singleDownloadThread.getResponse();
+
+            if (response == null){
+                ConsoleColors.printError("\nError: Can't download this video");
+                return;
+            }
+
             File data = response.data();
+
+            //Try open the new file
+            if (Config.isOpenVideoAfterDownload()){
+                try {
+                    if (Desktop.isDesktopSupported())
+                        Desktop.getDesktop().open(data);
+                } catch (IOException e) {
+                    ConsoleColors.printError("\nCan't open the video, desktop is not supported");
+                }
+            }
+
 
             if (response.ok()){
                 ConsoleColors.printInfo("File download successfully at " +
