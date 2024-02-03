@@ -27,3 +27,5 @@ replay_pid*
 target/maven-archiver
 target/maven-status
 target/generated-sources
+
+downloaded_videos/*.mp4
