@@ -119,4 +119,10 @@ public class ConsoleColors {
             System.out.println(e);
         }
     }
+
+    //Clear the console using escape sequence
+    //This is a new feature, don't replace if the old one works for you
+    public static void clearConsoleEscapeSequence_test(){
+        System.out.print("\033[H\033[2J");
+    }
 }

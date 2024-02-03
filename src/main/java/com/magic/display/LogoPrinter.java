@@ -16,7 +16,7 @@ public class LogoPrinter {
         System.out.println("              |___/                   ");
         System.out.println(ConsoleColors.RESET);
 
-        ConsoleColors.printInfo("v1.0 SNAPSHOT\n");
+        ConsoleColors.printInfo("v1.1 SNAPSHOT\n");
 
         TableDisplay.displayMap("SETTING", "VALUE", Config.getKeys(), Config.getValues());
 

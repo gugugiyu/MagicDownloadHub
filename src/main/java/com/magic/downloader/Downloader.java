@@ -16,6 +16,7 @@ import java.util.UUID;
 
 public class Downloader {
     private SingleFileDownloaderHandler singleFileDownloaderHandler;
+    public static final int PROGRESS_BAR_REFRESH_RATE = 200; //200ms
 
     public Downloader(YoutubeDownloader downloader){
         this.singleFileDownloaderHandler = new SingleFileDownloaderHandler(downloader);
@@ -45,26 +46,35 @@ public class Downloader {
         for (int i = 0; i < payloadSize; i++){
             Format bestFormat = videoInfoList.get(i).bestVideoWithAudioFormat();
 
-            downloadThreads.add(i, new DownloadThread(bestFormat, i));
+            downloadThreads.add(i, new DownloadThread(bestFormat));
             downloadThreads.get(i).start();
         }
 
-        int totalSuccessfulDownloadThread = 0;
 
-        //Join the threads
-        for (int i = 0; i < payloadSize; i++){
+        //Update progressbars call here. Since we only update it at one spot
+        //There's no need for a mutex lock
+        boolean isAllDone = false;
+
+        while (!isAllDone){
+            isAllDone = true;
+
+            for (int i = 0; i < payloadSize; i++){
+                ConsoleColors.clearConsoleEscapeSequence_test();
+                ProgressBar.printProgressBars(downloadThreads.get(i).getCurrentProgress(), i);
+
+                //If one of the thread isn't done, then we repeat this process
+                if (!downloadThreads.get(i).isDone())
+                    isAllDone = false;
+            }
+
             try{
-                downloadThreads.get(i).join(Config.getTimeoutTimeInMillisecond());
-
-                if (!downloadThreads.get(i).isError())
-                        totalSuccessfulDownloadThread++;
-
-            } catch (InterruptedException e){
-                ConsoleColors.printError("This download thread has been interrupted");
+                Thread.sleep(PROGRESS_BAR_REFRESH_RATE);
+            }catch (InterruptedException e){
+                ConsoleColors.printError("Error: Downloading thread has been interrupted. Some files might be corrupted");
             }
         }
 
-        ConsoleColors.printSuccess("\nDownloaded " + totalSuccessfulDownloadThread + " videos successfully\n");
+        ConsoleColors.printSuccess("\nDownloaded " + ProgressBar.getTotalCompletion() + " videos successfully\n");
         ProgressBar.clearPayloadProgressList();
     }
 
