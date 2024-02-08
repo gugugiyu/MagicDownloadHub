@@ -23,9 +23,12 @@ public class DownloadThread extends Thread{
 
     private boolean isError = false;
 
-    public DownloadThread(Format format){
+    private String rename;
+
+    public DownloadThread(Format format, String rename){
         this.format = format;
         this.currentProgress = 0;
+        this.rename = rename;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class DownloadThread extends Thread{
         File downloadDirectoryFile = new File(downloadDirectory);
         RequestVideoFileDownload request = new RequestVideoFileDownload(format)
                 .saveTo(downloadDirectoryFile)
+                .renameTo(rename)
                 .callback(new YoutubeProgressCallback<File>() {
                     @Override
                     public void onDownloading(int progress) {

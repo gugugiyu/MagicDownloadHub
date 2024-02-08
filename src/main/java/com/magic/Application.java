@@ -10,11 +10,9 @@ import com.magic.display.DisplayBeautifier;
 import com.magic.downloader.Downloader;
 import com.magic.searchEngine.SearchEngine;
 import com.magic.searchTabManager.SearchTabManager;
+import com.magic.videoManager.VideoManager;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.*;
 import java.util.List;
 
@@ -55,7 +53,7 @@ public class Application{
                     case 2:
                         ConsoleColors.printInstruction("\nEnter query string >> ", true);
 
-                        //Preconsume the input buffer
+                        //Pre consume the input buffer
                         scanner.nextLine();
                         String queryStr = scanner.nextLine();
                         searchEngine = new SearchEngine(null, null, downloader);
@@ -117,21 +115,11 @@ public class Application{
                         break;
 
                     case 7:
-                        ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
-                        ConsoleColors.printInstruction("\nEnter video ID >> ", true);
-                        scanner.nextLine();
-                        videoId = scanner.nextLine();
-                        //searchEngine = new SearchEngine(v, null, null, downloader);
-                        if (videoId == null || videoId.equalsIgnoreCase("") || videoId.trim().contains(" ")){
-                            ConsoleColors.printError("\nError: Invalid videoID. If you want to download multiple videos, it's best to use the payload download method instead.\n");
-                            continue;
-                        }
-                        videoDownloader.downloadVideo(videoId.trim());
-                        break;
-
-                    case 8:
                         //Download multiple videoID using space (" ") as a delimiter
                         ConsoleColors.printWarning("\nNote: DEFAULT video download path is set to the \"downloaded_videos\" directory");
+                        ConsoleColors.printInfo("\nTo specify a name for a video, add this syntax AFTER the renamed video:");
+                        ConsoleColors.printInfo("'@' + 'name' (Ex. @babyshark)");
+                        ConsoleColors.printWarning("\nIn case there're multiple names for a video, the first name will be taken\n");
                         ConsoleColors.printInstruction("\nEnter video IDs (separated by a space)>> ", true);
                         scanner.nextLine();
                         videoId = scanner.nextLine();
@@ -144,14 +132,21 @@ public class Application{
                         //Break them into a list of string
                         List<String> videoIDs =  Arrays.asList(videoId.trim().split(" "));
 
-                        if (Config.isFilterDuplicateVideoId())
-                            videoIDs = new ArrayList<>(new HashSet<>(videoIDs));
+                        videoDownloader.downloadVideos(videoIDs);
+                        break;
 
-                        if (videoIDs.size() > Config.getMaxNumberOfDownloadThread()){
-                            ConsoleColors.printError("\nError: Exceed max number of download. Try again in smaller download payload instead.");
+                    case 8:
+                        //Find and play video using SimpleFileVisitor API
+                        ConsoleColors.printInstruction("\nType a word or a phrase of the video's name>> ", true);
+                        scanner.nextLine();
+                        String videoName = scanner.nextLine();
+
+                        if (videoName == null || videoName.equalsIgnoreCase("")){
+                            ConsoleColors.printError("\nError: Invalid video name\n");
+                            continue;
                         }
 
-                        videoDownloader.downloadVideos(videoIDs);
+                        VideoManager.findVideoAndPlay(videoName);
                         break;
 
                     default:

@@ -2,6 +2,7 @@ package com.magic.display;
 
 import com.magic.display.colorSwitcher.ConsoleColors;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,17 @@ public class OptionDisplay{
             System.out.print("\n\n>> ");
         }
 
+        public static void printOption_path(List<Path> options) {
+            //Convert list of paths into list of strings
+            List<String> optionList = new ArrayList<>();
+
+            for (Path path : options)
+                optionList.add(path.toString());
+
+            printOption(optionList);
+        }
+
+
         public static void printOptionMainMenu() {
             List<String> menuList = new ArrayList<>();
 
@@ -48,8 +60,10 @@ public class OptionDisplay{
 
             menuList.add("---DOWNLOAD");
             menuList.add("Get all formats using videoID");
-            menuList.add("Download using videoID (synchronously)");
-            menuList.add("Create payload to download (asynchronously)");
+            menuList.add("Download video(s)(asynchronously)");
+
+            menuList.add("---VIEW");
+            menuList.add("Find and play video by name");
 
             ConsoleColors.printInstruction("# Select operation:", false);
             printOption(menuList);
