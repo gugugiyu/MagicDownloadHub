@@ -1,6 +1,8 @@
 # MagicDownloadHub
 
-![demo](https://github.com/gugugiyu/MagicDownloadHub/assets/106458387/cb11be59-7a85-4a0d-8149-b065af322089)
+![Capture](https://github.com/gugugiyu/MagicDownloadHub/assets/106458387/c3a87a04-1552-4383-af65-567b98d26de2)
+
+
 
 A generic youtube with integrated search engine and multithreading downloader implemented based on *sealedtx/java-youtube-downloader*
 
