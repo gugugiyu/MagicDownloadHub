@@ -6,16 +6,17 @@ import com.github.kiulian.downloader.model.search.field.DurationField;
 import com.github.kiulian.downloader.model.search.field.FeatureField;
 
 import com.magic.model.SearchTab;
+import com.magic.modified.YoutubeDownloader_Modified;
 import com.magic.searchTabManager.SearchTabManager;
 
 public class SearchEngine {
     private FeatureField featureField;
     private DurationField durationField;
-    private YoutubeDownloader downloader;
+    private YoutubeDownloader_Modified downloader;
 
     //Tabs of previous search result
 
-    public SearchEngine(FeatureField featureWith, DurationField duration, YoutubeDownloader downloader){
+    public SearchEngine(FeatureField featureWith, DurationField duration, YoutubeDownloader_Modified downloader){
         this.featureField = featureWith;
         this.durationField = duration;
         this.downloader = downloader;

@@ -29,3 +29,10 @@ target/maven-status
 target/generated-sources
 
 downloaded_videos/*.mp4
+
+#Test compile with launch4j
+*.exe
+target/jre-bundle
+resources
+
+app/

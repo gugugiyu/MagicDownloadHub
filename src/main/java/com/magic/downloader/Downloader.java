@@ -11,19 +11,19 @@ import com.magic.Config;
 import com.magic.display.ProgressBar;
 import com.magic.display.colorSwitcher.ConsoleColors;
 import com.magic.model.DownloadThread;
+import com.magic.model.VideoPair;
+import com.magic.modified.YoutubeDownloader_Modified;
 import com.magic.utils.VideoPlayer;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Downloader {
-    private final YoutubeDownloader downloader;
+    private final YoutubeDownloader_Modified downloader;
     public static final int PROGRESS_BAR_REFRESH_RATE = 200; //200ms
 
-    public Downloader(YoutubeDownloader downloader){
+    public Downloader(YoutubeDownloader_Modified downloader){
         this.downloader = downloader;
     }
 
@@ -37,41 +37,11 @@ public class Downloader {
     }
 
     public void downloadVideos(List<String> videoIDList){
-        //Error case: first element should always be an id
-        if (videoIDList.get(0).contains("@")){
-            ConsoleColors.printError("\nError: First element can't be a name\n");
-            return;
-        }
+        ArrayList<VideoPair> videoPairs = extractIDFromName(videoIDList);
 
-        //Separate the names and the id
-        List<String> videoName = new ArrayList<>();
+        ArrayList<VideoInfo> videoInfoList = getVideoInfoList(videoPairs);
 
-        int videoIdListLen = videoIDList.size();
-        int currentNameListIdx = 0;
-        boolean isNewVideoID = false;
-
-        for (int i = 0; i < videoIdListLen; i++){
-            String token = videoIDList.get(i);
-            if (token.startsWith("@")){
-                if (!isNewVideoID)
-                    continue;
-
-                videoName.add(currentNameListIdx++, renameToken(token));
-                isNewVideoID = false;
-            }else{
-                //This is a videoID
-                isNewVideoID = true;
-            }
-        }
-
-        //Remove all the name from this list
-        videoIDList = videoIDList.stream()
-                .filter(videoID -> !videoID.contains("@"))
-                .toList();
-
-        List<VideoInfo> videoInfoList = getVideoInfoList(videoIDList);
-
-        if (videoIDList.size() > Config.getMaxNumberOfDownloadThread()){
+        if (videoPairs.size() > Config.getMaxNumberOfDownloadThread()){
             ConsoleColors.printError("\nError: Exceed max number of download. Try again in smaller download payload instead.");
             return;
         }
@@ -83,7 +53,7 @@ public class Downloader {
         }
 
         //Donwload async
-        int payloadSize = videoIDList.size();
+        int payloadSize = videoInfoList.size();
 
         ProgressBar.initPayloadProgressList(payloadSize);
 
@@ -93,7 +63,7 @@ public class Downloader {
         for (int i = 0; i < payloadSize; i++){
             Format bestFormat = videoInfoList.get(i).bestVideoWithAudioFormat();
 
-            downloadThreads.add(i, new DownloadThread(bestFormat, videoName.get(i)));
+            downloadThreads.add(i, new DownloadThread(bestFormat, videoPairs.get(i).getVideoName()));
             downloadThreads.get(i).start();
         }
 
@@ -134,11 +104,11 @@ public class Downloader {
     }
 
     //Helper function for the payload download
-    private List<VideoInfo> getVideoInfoList(List<String> videoIDList){
-        List<VideoInfo> returnList = new ArrayList<>();
+    private ArrayList<VideoInfo> getVideoInfoList(ArrayList<VideoPair> list){
+        ArrayList<VideoInfo> returnList = new ArrayList<>();
 
-        for (String item : videoIDList){
-            VideoInfo videoInfo = getVideoInfo_sync(item);
+        for (VideoPair item : list){
+            VideoInfo videoInfo = getVideoInfo_sync(item.getVideoId());
             returnList.add(videoInfo);
         }
 
@@ -192,5 +162,61 @@ public class Downloader {
         String modifiedString = newName.substring(1).replace('-', '_');
         modifiedString = StringUtils.capitalise(modifiedString);
         return modifiedString;
+    }
+
+    private ArrayList<VideoPair> extractIDFromName(List<String> list){
+        ArrayList<VideoPair> idToNameMap = new ArrayList<>();
+
+        //In case there's only 1 video
+        if (list.size() == 1){
+            idToNameMap.add(new VideoPair(list.get(0), generateRandomVideoName()));
+            return idToNameMap;
+        }
+
+        int videoIdListLen = list.size();
+        int curIdIdx = 0;
+
+        while (curIdIdx < videoIdListLen){
+            curIdIdx = nextVideoIdIdx(list, curIdIdx);
+
+            if (curIdIdx == -1)
+                break;
+
+            String token = list.get(curIdIdx);
+            String prevToken = curIdIdx - 1 > - 1
+                                ? list.get(curIdIdx - 1)
+                                : "";
+
+            if (prevToken.contains("@")){
+                //If the previous is a name
+                idToNameMap.add(new VideoPair(token, prevToken));
+            }else{
+                idToNameMap.add(new VideoPair(token, generateRandomVideoName()));
+            }
+
+            curIdIdx++;
+        }
+
+        return idToNameMap;
+    }
+
+    private int nextVideoIdIdx(List<String> list, int curIdx){
+        int i = curIdx;
+
+        while (list.get(i).contains("@")){
+            i++;
+        }
+
+        return i;
+    }
+
+
+    private boolean containName(List<String> list, String name){
+        for (String item : list){
+            if (item.equalsIgnoreCase(name))
+                return true;
+        }
+
+        return false;
     }
 }

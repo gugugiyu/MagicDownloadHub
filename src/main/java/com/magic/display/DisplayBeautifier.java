@@ -6,11 +6,8 @@ import com.github.kiulian.downloader.model.search.SearchResultVideoDetails;
 import com.magic.display.colorSwitcher.ConsoleColors;
 import com.magic.model.SearchTab;
 import com.magic.searchTabManager.SearchTabManager;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.Semaphore;
-
 public class DisplayBeautifier {
     public static void printBeautifiedVideoList(SearchResult searchResult, int id, int total){
         if (searchResult == null)
@@ -84,20 +81,7 @@ public class DisplayBeautifier {
 
             OptionDisplay.printOption(extractedTabListName);
 
-            //Handle user input for tab selection
-            try {
-                int mode = scanner.nextInt();
-
-                if (mode >= 0 && mode < extractedTabListName.size()){
-                    SearchTabManager.moveToTask(mode);
-                    ConsoleColors.printSuccess("\nMoved to tab " + mode + " successfully\n");
-                }else{
-                    ConsoleColors.printInfo("\nYou didn't select the new tab. Using current tab.\n");
-                }
-
-            }catch (InputMismatchException e){
-                ConsoleColors.printError("\n Invalid mode selection. Please try again.");
-            }
+            handleUserInputSwitchSearchTab(scanner, extractedTabListName.size());
         }
     }
 
@@ -118,5 +102,22 @@ public class DisplayBeautifier {
         formattedTime += remainSecond;
 
         return formattedTime;
+    }
+
+    private static void handleUserInputSwitchSearchTab(Scanner scanner, int length){
+        //Handle user input for tab selection
+        try {
+            int mode = scanner.nextInt();
+
+            if (mode >= 0 && mode < length){
+                SearchTabManager.moveToTask(mode);
+                ConsoleColors.printSuccess("\nMoved to tab " + mode + " successfully\n");
+            }else{
+                ConsoleColors.printInfo("\nYou didn't select the new tab. Using current tab.\n");
+            }
+
+        }catch (InputMismatchException e){
+            ConsoleColors.printError("\n Invalid mode selection. Please try again.");
+        }
     }
 }

@@ -60,7 +60,7 @@ public class OptionDisplay{
 
             menuList.add("---DOWNLOAD");
             menuList.add("Get all formats using videoID");
-            menuList.add("Download video(s)(asynchronously)");
+            menuList.add("Download video(s) (asynchronously)");
 
             menuList.add("---VIEW");
             menuList.add("Find and play video by name");

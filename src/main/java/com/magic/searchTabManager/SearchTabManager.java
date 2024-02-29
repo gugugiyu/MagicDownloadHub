@@ -6,6 +6,7 @@ import com.github.kiulian.downloader.downloader.request.RequestSearchResult;
 import com.github.kiulian.downloader.model.search.SearchResult;
 import com.github.kiulian.downloader.model.search.field.TypeField;
 import com.magic.model.SearchTab;
+import com.magic.modified.YoutubeDownloader_Modified;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class SearchTabManager {
         return searchTabList.get(id);
     }
 
-    public static SearchTab nextPage(YoutubeDownloader downloader, String queryStr){
+    public static SearchTab nextPage(YoutubeDownloader_Modified downloader, String queryStr){
         // Offset 1 as currentIdx use 0-based
         SearchResult latestSearchResult = searchTabList.get(currentIdx - 1).getResultList();
 
@@ -63,7 +64,7 @@ public class SearchTabManager {
         return null;
     }
 
-    public static SearchTab search(YoutubeDownloader downloader, String queryStr){
+    public static SearchTab search(YoutubeDownloader_Modified downloader, String queryStr){
         RequestSearchResult request = new RequestSearchResult(queryStr)
                 // filters
                 .type(TypeField.VIDEO)                 // Videos only

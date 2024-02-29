@@ -1,5 +1,7 @@
 package com.magic;
 
+import com.magic.display.TableDisplay;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,10 @@ public class Config {
         List<String> returnList = new ArrayList<>();
 
         //Add all the config key here
-        returnList.add(downloadPath);
+        returnList.add(downloadPath.length() > TableDisplay.TABLE_WIDTH / 2
+                        ? downloadPath.substring(0, (TableDisplay.TABLE_WIDTH / 2) - 3) + ".." //Offset 3 space for appending "..."
+                        : downloadPath
+        );
         returnList.add(String.valueOf(openVideoAfterDownload));
         returnList.add(String.valueOf(verifyVideoIDOnPayloadDownload));
         returnList.add(String.valueOf(timeoutTimeInMillisecond) + "ms");
