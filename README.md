@@ -11,6 +11,36 @@ A generic youtube with integrated search engine and multithreading downloader im
 - Multithreading videos download
 - Video Manager (WIP)
 
+## Docs
+
+Assumed that you've launched the application successfully and are presented with the home screen (the figure at the start of this markdown)
+
+### Searching
+
+To search for a phrase, do the following:
+
+- Press *2* ( Search with keyword )
+- Enter the phrase
+- Press *Enter*
+
+You can also [3] Extend this search, [4] Browse your search tabs, and [5] View current tab's search result
+
+### Downloading
+
+First, you may want to check all available video and audio formats of the video by using [6] Get all formats using videoID
+
+To download one or multiple video, do the following:
+
+- Press *7*
+
+- Enter the videoID (Note that if you also want to include a name, append your name with a "@" then place it BEFORE the videoID. If you place multiple names, the LATEST name will be chose, your name must not contain any spaces as well). For example:
+
+  ``@not_rick_roll dQw4w9WgXcQ``
+
+- Press *Enter*
+
+After finish downloading, the first video you specified in this will be opened, you should check and ensure the quality and audio are matched to your desire. If no name was given to a video, we'll generate a random [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) for it.
+
 ## Default Configuration
 | settings                       | type    | default value       | description                                                  |
 | :----------------------------- | :------ | :------------------ | :----------------------------------------------------------- |
